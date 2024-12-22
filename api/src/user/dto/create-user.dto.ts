@@ -1,12 +1,8 @@
-import { IsEmail, IsIn, IsString } from 'class-validator';
-import { CREATE_USER_ROLE } from '../entity/user-role.entity';
+import { IsEmail, IsString } from 'class-validator';
 
 export class CreateUserDto {
     @IsEmail()
     email: string;
-
-    @IsIn(CREATE_USER_ROLE)
-    role: (typeof CREATE_USER_ROLE)[number];
 
     @IsString()
     password: string;

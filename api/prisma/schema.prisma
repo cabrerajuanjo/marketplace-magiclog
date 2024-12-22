@@ -22,12 +22,12 @@ model User {
 
 model Product {
     id        Int      @id @default(autoincrement())
-    sku       String @unique()
+    sku       String   @unique()
     name      String
     price     Float
     quantity  Int
-    userId    Int
-    user      User     @relation(fields: [userId], references: [id])
+    sellerId  Int
+    user      User     @relation(fields: [sellerId], references: [id])
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }

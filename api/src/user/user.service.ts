@@ -3,15 +3,18 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
+import { JwtService } from '@nestjs/jwt';
 import { ApplicationError } from './exception/user-not-found.exception';
 import { USER_INCORRECT_PASSWORD_CODE } from './constants/internal-response-codes.constant';
-import { TOKEN_EXPIRATION } from './constants/session.constant';
 import { SessionTokenDto } from './dto/session-token.dto';
+import { USER_ROLES_VALUES } from './entity/user-role.entity';
 
 @Injectable()
 export class UserService {
-    constructor(private readonly userRepository: UserRepository) {}
+    constructor(
+        private jwtService: JwtService,
+        private readonly userRepository: UserRepository,
+    ) { }
 
     async create(createUserDto: CreateUserDto) {
         const SALT_ROUNDS = 10;
@@ -21,7 +24,7 @@ export class UserService {
         );
         return await this.userRepository.create({
             email: createUserDto.email,
-            role: createUserDto.role,
+            role: USER_ROLES_VALUES.USER,
             password: hashedPassword,
         });
     }
@@ -42,8 +45,6 @@ export class UserService {
             role: role,
         };
 
-        return jwt.sign(tokenPayload, process.env.JWT_SECRET as string, {
-            expiresIn: TOKEN_EXPIRATION,
-        });
+        return this.jwtService.sign(tokenPayload);
     }
 }
