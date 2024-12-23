@@ -15,22 +15,18 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, handleLogout }) => {
                     Marketplace
                 </Typography>
 
-                {/* Public route for products */}
                 <Button color="inherit" component={Link} to="/">
-                    Catalogo
+                    Comprar
                 </Button>
 
-                {/* Protected route for seller */}
                 <Button color="inherit" component={Link} to="/seller">
                     Vender
                 </Button>
 
-                {/* Protected route for admin */}
                 <Button color="inherit" component={Link} to="/admin">
                     Administrar
                 </Button>
 
-                {/* Authentication buttons */}
                 {isLoggedIn ? (
                     <Button color="inherit" onClick={handleLogout}>
                         Salir

@@ -28,6 +28,7 @@ export async function login(email: string, password: string): Promise<LoginResul
         return { tokenPayload: null, responseCode: response.status }
     }
     const result = await response.json() as LoginResponse;
+    sessionStorage.setItem('sessionToken', result.sessionToken);
     const tokenPayload = jwtDecode<TokenPayload>(result.sessionToken)
     return { tokenPayload, responseCode: response.status };
 }

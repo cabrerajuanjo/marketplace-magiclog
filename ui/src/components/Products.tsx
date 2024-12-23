@@ -1,14 +1,16 @@
 import { Grid, Card, CardContent, Typography, Button } from "@mui/material";
+import React from "react";
 
-const products = [
-    { id: 1, name: "Product 1", sku: "1", price: "$10" },
-    { id: 2, name: "Product 2", sku: "2", price: "$20" },
-    { id: 3, name: "Product 3", sku: "3", price: "$30" },
-    { id: 4, name: "Product 4", sku: "4", price: "$40" },
-    { id: 5, name: "Product 5", sku: "4", price: "$40" },
-];
+interface ProductsProps {
+    products: {
+        id: number,
+        name: string,
+        sku: string,
+        price: number,
+    }[]
+}
 
-function ProductMatrix() {
+const ProductMatrix: React.FC<ProductsProps> = ({products}) => {
     return (
         <div style={{ padding: 20 }}>
             <Grid container spacing={3}>
