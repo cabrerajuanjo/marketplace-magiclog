@@ -1,12 +1,7 @@
-import {
-    IsNumber,
-    IsOptional,
-    IsString,
-    Min,
-    ValidateIf,
-} from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
+import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
-export class SearchProductsDto {
+export class SearchProductsQueryDto {
     @IsString()
     @IsOptional()
     sku: string;
@@ -15,14 +10,15 @@ export class SearchProductsDto {
     @IsOptional()
     name: string;
 
+    @Transform((params: TransformFnParams) => +params.value)
     @IsNumber()
     @IsOptional()
     @Min(0)
-    minPrice: string;
+    minPrice: number;
 
+    @Transform((params: TransformFnParams) => +params.value)
     @IsNumber()
     @IsOptional()
     @Min(0)
-    @ValidateIf((self: SearchProductsDto) => self.maxPrice < self.minPrice)
-    maxPrice: string;
+    maxPrice: number;
 }

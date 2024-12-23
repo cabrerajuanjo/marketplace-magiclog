@@ -1,6 +1,4 @@
-import { ExceptionCode } from '../types/user.type';
-
-export class ApplicationError extends Error {
+export class ApplicationError<ExceptionCode> extends Error {
     code: ExceptionCode;
 
     constructor(message: string, code: ExceptionCode) {

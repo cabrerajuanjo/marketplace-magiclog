@@ -4,17 +4,17 @@ import { LoginDto } from './dto/login.dto';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { ApplicationError } from './exception/user-not-found.exception';
 import { USER_INCORRECT_PASSWORD_CODE } from './constants/internal-response-codes.constant';
 import { SessionTokenDto } from './dto/session-token.dto';
 import { USER_ROLES_VALUES } from './entity/user-role.entity';
+import { ApplicationError } from 'src/common/exeptions/aplication-exception.exception';
 
 @Injectable()
 export class UserService {
     constructor(
         private jwtService: JwtService,
         private readonly userRepository: UserRepository,
-    ) { }
+    ) {}
 
     async create(createUserDto: CreateUserDto) {
         const SALT_ROUNDS = 10;
@@ -46,5 +46,9 @@ export class UserService {
         };
 
         return this.jwtService.sign(tokenPayload);
+    }
+
+    async getSellers() {
+        return await this.userRepository.getUsersWithProducts();
     }
 }

@@ -5,16 +5,17 @@ import {
     HttpStatus,
     HttpException,
     HttpCode,
+    Get,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
-import { ApplicationError } from './exception/user-not-found.exception';
 import {
     USER_ALREADY_EXISTS_CODE,
     USER_INCORRECT_PASSWORD_CODE,
     USER_NOT_FOUND_CODE,
 } from './constants/internal-response-codes.constant';
+import { ApplicationError } from 'src/common/exeptions/aplication-exception.exception';
 
 @Controller('user')
 export class UserController {
@@ -65,5 +66,11 @@ export class UserController {
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
+    }
+
+    @Get('sellers')
+    @HttpCode(200)
+    async getSellers() {
+        return await this.userService.getSellers();
     }
 }

@@ -6,7 +6,7 @@ import {
     USER_ALREADY_EXISTS_CODE,
     USER_NOT_FOUND_CODE,
 } from './constants/internal-response-codes.constant';
-import { ApplicationError } from './exception/user-not-found.exception';
+import { ApplicationError } from 'src/common/exeptions/aplication-exception.exception';
 
 @Injectable()
 export class UserRepository {
@@ -48,5 +48,12 @@ export class UserRepository {
                 );
             }
         }
+    }
+
+    async getUsersWithProducts() {
+        return await this.prisma.user.findMany({
+            include: { product: true },
+            where: { product: { some: {} } },
+        });
     }
 }

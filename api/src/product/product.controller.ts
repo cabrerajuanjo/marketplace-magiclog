@@ -12,14 +12,14 @@ import {
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
-import { ApplicationError } from './exception/product-not-found.exception';
 import { PRODUCT_ALREADY_EXISTS_CODE } from './constants/internal-response-codes.constant';
 import { AuthGuard } from 'src/user/guards/auth.guard';
 import { RolesGuard } from 'src/user/guards/role.guard';
 import { Roles } from 'src/user/guards/role.decorator';
 import { SessionPayload } from 'src/common/types/session.type';
 import { GetAllQueryDto } from './dto/get-all-product-query.dto';
-import { SearchProductsDto } from './dto/search-product-query.dto';
+import { SearchProductsQueryDto } from './dto/search-product-query.dto';
+import { ApplicationError } from 'src/common/exeptions/aplication-exception.exception';
 
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('product')
@@ -70,7 +70,7 @@ export class ProductController {
 
     @Roles('user')
     @Get('search')
-    searchProducts(searchProductsDto: SearchProductsDto) {
+    searchProducts(@Query() searchProductsDto: SearchProductsQueryDto) {
         return this.productService.search(searchProductsDto);
     }
 }

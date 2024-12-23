@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { GetAllQueryDto } from './dto/get-all-product-query.dto';
 import { ProductRepository } from './product.repository';
-import { SearchProductsDto } from './dto/search-product-query.dto';
+import { SearchProductsQueryDto } from './dto/search-product-query.dto';
 
 @Injectable()
 export class ProductService {
@@ -13,14 +13,14 @@ export class ProductService {
     }
 
     getAll(getAllQueryDto: GetAllQueryDto) {
-        return this.productRepository.getAll(getAllQueryDto);
+        return this.productRepository.getProductsByEmail(getAllQueryDto.sellerEmail);
     }
 
     getOwn(email: string) {
-        return `This action returns a # product`;
+        return this.productRepository.getProductsByEmail(email);
     }
 
-    search(searchProductsDto: SearchProductsDto) {
-        return `This action returns a # product`;
+    search(searchProductsDto: SearchProductsQueryDto) {
+        return this.productRepository.search(searchProductsDto);
     }
 }
