@@ -1,16 +1,43 @@
-import React, { SyntheticEvent } from "react";
-import { Button, TextField, Typography, Box, Container } from "@mui/material";
+import React, { useState } from "react";
+import {
+    Button,
+    TextField,
+    Typography,
+    Box,
+    Container,
+    Link as MuiLink,
+} from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import { createAccount } from "../services/user.service";
+import { INVALID_EMAIL_MESSAGE, MISMATCHED_PASSWORD_MESSAGE, SERVER_ERROR_MESSAGE, USER_ALREADY_EXISTS_MESSAGE } from "../constants/messages.constant";
+import FormErrorDetail from "./FormErrorDetail";
 
 function SignUp() {
-    const handleSubmit = (event: SyntheticEvent) => {
+    const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-            firstName: data.get("firstName"),
-            lastName: data.get("lastName"),
-            email: data.get("email"),
-            password: data.get("password"),
-        });
+        const email = data.get("email") as string;
+        const password = data.get("password") as string;
+        const passwordConfirm = data.get("password-confirm");
+        // const confirm = document.querySelector('input[name=password-confirm]');
+
+        if (password !== passwordConfirm) {
+            return setErrorMessage(MISMATCHED_PASSWORD_MESSAGE);
+        }
+
+        const result = await createAccount(email, password);
+        if (result === 201) {
+            navigate('/')
+        } else if (result === 400) {
+            setErrorMessage(INVALID_EMAIL_MESSAGE);
+        } else if (result === 409) {
+            setErrorMessage(USER_ALREADY_EXISTS_MESSAGE);
+        } else {
+            setErrorMessage(SERVER_ERROR_MESSAGE);
+        }
     };
 
     return (
@@ -34,6 +61,7 @@ function SignUp() {
                     label="Email"
                     name="email"
                     autoComplete="email"
+                    autoFocus
                 />
                 <TextField
                     margin="normal"
@@ -49,15 +77,23 @@ function SignUp() {
                     margin="normal"
                     required
                     fullWidth
-                    name="repeat-password"
+                    name="password-confirm"
                     label="Confirmar contraseña"
                     type="password"
-                    id="repeat-password"
+                    id="password-confirm"
                     autoComplete="new-password"
                 />
                 <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                     Crear cuenta
                 </Button>
+
+                <Typography variant="body2" sx={{ mt: 2 }}>
+                    Ya tienes cuenta?{" "}
+                    <MuiLink component={Link} to="/signin" underline="hover">
+                        Ingrese
+                    </MuiLink>
+                </Typography>
+                <FormErrorDetail errorMessage={errorMessage} />
             </Box>
         </Container>
     );
