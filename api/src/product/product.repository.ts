@@ -4,24 +4,24 @@ import { Product } from './entity/product.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Inject, Injectable } from '@nestjs/common';
 import { PRODUCT_ALREADY_EXISTS_CODE } from './constants/internal-response-codes.constant';
+import { GetAllQueryDto } from './dto/get-all-product-query.dto';
+import { SearchProductsDto } from './dto/search-product-query.dto';
 
 @Injectable()
 export class ProductRepository {
     @Inject(PrismaService)
     private readonly prisma: PrismaService;
 
-    async create(product: Product): Promise<void> {
+    async create(product: Product, sellerEmail: string): Promise<void> {
         try {
-            const { sellerId, ...productData } = product;
             await this.prisma.product.create({
                 data: {
-                    ...productData,
-                    user: { connect: { id: sellerId } },
+                    ...product,
+                    user: { connect: { email: sellerEmail } },
                 },
             });
         } catch (error) {
             if (!(error instanceof Prisma.PrismaClientKnownRequestError)) {
-                console.error(error);
                 throw error;
             }
             // TODO: Define P2002 as a constnant somewhere else
@@ -34,6 +34,24 @@ export class ProductRepository {
         }
     }
 
+    async getAll(getAllQueryDto: GetAllQueryDto) {
+        try {
+            const { sellerEmail } = getAllQueryDto;
+            return await this.prisma.product.findMany({
+                where: { user: { email: sellerEmail } },
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    getOwn(email: string) {
+        return `This action returns a # product`;
+    }
+
+    search(searchProductsDto: SearchProductsDto) {
+        return `This action returns a # product`;
+    }
     // async findUserByEmail(email: string): Promise<User> {
     //     try {
     //         return await this.prisma.user.findFirstOrThrow({

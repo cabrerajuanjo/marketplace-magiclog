@@ -1,29 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { GetAllQueryDto } from './dto/get-all-product-query.dto';
 import { ProductRepository } from './product.repository';
+import { SearchProductsDto } from './dto/search-product-query.dto';
 
 @Injectable()
 export class ProductService {
     constructor(private readonly productRepository: ProductRepository) {}
 
-    async create(createProductDto: CreateProductDto) {
-        await this.productRepository.create(createProductDto);
+    async create(createProductDto: CreateProductDto, sellerEmail: string) {
+        await this.productRepository.create(createProductDto, sellerEmail);
     }
 
-    findAll() {
-        return `This action returns all product`;
+    getAll(getAllQueryDto: GetAllQueryDto) {
+        return this.productRepository.getAll(getAllQueryDto);
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} product`;
+    getOwn(email: string) {
+        return `This action returns a # product`;
     }
 
-    update(id: number, updateProductDto: UpdateProductDto) {
-        return `This action updates a #${id} product`;
-    }
-
-    remove(id: number) {
-        return `This action removes a #${id} product`;
+    search(searchProductsDto: SearchProductsDto) {
+        return `This action returns a # product`;
     }
 }

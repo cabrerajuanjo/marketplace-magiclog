@@ -3,10 +3,12 @@ import {
     Get,
     Post,
     Body,
-    Param,
     HttpException,
     HttpStatus,
     UseGuards,
+    Req,
+    RawBodyRequest,
+    Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -15,18 +17,27 @@ import { PRODUCT_ALREADY_EXISTS_CODE } from './constants/internal-response-codes
 import { AuthGuard } from 'src/user/guards/auth.guard';
 import { RolesGuard } from 'src/user/guards/role.guard';
 import { Roles } from 'src/user/guards/role.decorator';
-// import { UpdateProductDto } from './dto/update-product.dto';
+import { SessionPayload } from 'src/common/types/session.type';
+import { GetAllQueryDto } from './dto/get-all-product-query.dto';
+import { SearchProductsDto } from './dto/search-product-query.dto';
 
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('product')
 export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
     @Roles('user')
-    @UseGuards(AuthGuard, RolesGuard)
     @Post()
-    async create(@Body() createProductDto: CreateProductDto) {
+    async create(
+        @Body() createProductDto: CreateProductDto,
+        @Req() req: RawBodyRequest<Request & SessionPayload>,
+    ) {
         try {
-            return await this.productService.create(createProductDto);
+            const { user } = req;
+            return await this.productService.create(
+                createProductDto,
+                user.email,
+            );
         } catch (error) {
             if (!(error instanceof ApplicationError)) {
                 throw error;
@@ -44,26 +55,22 @@ export class ProductController {
         }
     }
 
-    @Get()
-    findAll() {
-        return this.productService.findAll();
+    @Roles('admin')
+    @Get('all')
+    getAll(@Query() getAllQueryDto: GetAllQueryDto) {
+        return this.productService.getAll(getAllQueryDto);
     }
 
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.productService.findOne(+id);
+    @Roles('user')
+    @Get('mine')
+    getOwn(@Req() req: RawBodyRequest<Request & SessionPayload>) {
+        const { user } = req;
+        return this.productService.getOwn(user.email);
     }
 
-    // @Patch(':id')
-    // update(
-    //     @Param('id') id: string,
-    //     @Body() updateProductDto: UpdateProductDto,
-    // ) {
-    //     return this.productService.update(+id, updateProductDto);
-    // }
-    //
-    // @Delete(':id')
-    // remove(@Param('id') id: string) {
-    //     return this.productService.remove(+id);
-    // }
+    @Roles('user')
+    @Get('search')
+    searchProducts(searchProductsDto: SearchProductsDto) {
+        return this.productService.search(searchProductsDto);
+    }
 }
