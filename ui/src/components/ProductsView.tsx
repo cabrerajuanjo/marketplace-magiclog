@@ -11,8 +11,8 @@ import {
     Input,
     Slider,
 } from "@mui/material";
-import Products from "./Products";
 import { searchProducts, Product, SearchFilter, getMinMaxPrice } from "../services/product.service";
+import ProductMatrix from "./Products";
 
 
 
@@ -62,7 +62,7 @@ const ProductsView: React.FC = () => {
     };
 
     return (
-        <Container sx={{ display: "flex" }}>
+        <Container sx={{ display: "flex", gap: 1 }}>
             <div style={{ padding: 20 }}>
                 <Box
                     sx={{ p: 2 }}>
@@ -111,7 +111,11 @@ const ProductsView: React.FC = () => {
                     </Button>
                 </Box>
             </div>
-            <Products products={products} />
+            <Container>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5, p: 2, boxShadow: 1, borderRadius: 1 }}>
+                    <ProductMatrix products={products} />
+                </Box>
+            </Container>
         </Container>
     );
 };

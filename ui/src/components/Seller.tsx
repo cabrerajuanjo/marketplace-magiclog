@@ -23,7 +23,7 @@ const Seller: React.FC = () => {
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, p: 2 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 2, boxShadow: 1, borderRadius: 1 }}>
                         <Typography variant="h6">Mis productos</Typography>
-                        <ProductMatrix products={products} />
+                        <ProductMatrix products={products} hideBuyButton={true}/>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 2, boxShadow: 1, borderRadius: 1 }}>
                         <Typography variant="h6">Add Product</Typography>
