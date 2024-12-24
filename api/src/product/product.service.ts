@@ -8,16 +8,26 @@ import { SearchProductsQueryDto } from './dto/search-product-query.dto';
 export class ProductService {
     constructor(private readonly productRepository: ProductRepository) {}
 
-    async create(createProductDto: CreateProductDto, sellerEmail: string) {
-        await this.productRepository.create(createProductDto, sellerEmail);
+    create(createProductDto: CreateProductDto, sellerEmail: string) {
+        this.productRepository.create(createProductDto, sellerEmail);
     }
 
     getAll(getAllQueryDto: GetAllQueryDto) {
-        return this.productRepository.getProductsByEmail(getAllQueryDto.sellerEmail);
+        return this.productRepository.getProductsByEmail(
+            getAllQueryDto.sellerEmail,
+        );
     }
 
     getOwn(email: string) {
         return this.productRepository.getProductsByEmail(email);
+    }
+
+    async getMinMax() {
+        const result = await this.productRepository.getProductsOrderedByPrice();
+        return {
+            smallestPrice: result[0].price,
+            highestPrice: result[result.length - 1].price,
+        };
     }
 
     search(searchProductsDto: SearchProductsQueryDto) {

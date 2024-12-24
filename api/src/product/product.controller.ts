@@ -21,11 +21,11 @@ import { GetAllQueryDto } from './dto/get-all-product-query.dto';
 import { SearchProductsQueryDto } from './dto/search-product-query.dto';
 import { ApplicationError } from 'src/common/exeptions/aplication-exception.exception';
 
-@UseGuards(AuthGuard, RolesGuard)
 @Controller('product')
 export class ProductController {
-    constructor(private readonly productService: ProductService) {}
+    constructor(private readonly productService: ProductService) { }
 
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles('user')
     @Post()
     async create(
@@ -55,12 +55,14 @@ export class ProductController {
         }
     }
 
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles('admin')
     @Get('all')
     getAll(@Query() getAllQueryDto: GetAllQueryDto) {
         return this.productService.getAll(getAllQueryDto);
     }
 
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles('user')
     @Get('mine')
     getOwn(@Req() req: RawBodyRequest<Request & SessionPayload>) {
@@ -68,9 +70,13 @@ export class ProductController {
         return this.productService.getOwn(user.email);
     }
 
-    @Roles('user')
     @Get('search')
     searchProducts(@Query() searchProductsDto: SearchProductsQueryDto) {
         return this.productService.search(searchProductsDto);
+    }
+
+    @Get('minmax-price')
+    getMinMaxPrice() {
+        return this.productService.getMinMax();
     }
 }

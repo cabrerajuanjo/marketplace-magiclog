@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Container,
     Box,
@@ -12,55 +12,106 @@ import {
     Slider,
 } from "@mui/material";
 import Products from "./Products";
+import { searchProducts, Product, SearchFilter, getMinMaxPrice } from "../services/product.service";
 
-const sampleProducts = [
-    { id: 1, sku: "A", name: "Product A", price: 10 },
-    { id: 2, sku: "B", name: "Product B", price: 20 },
-    { id: 3, sku: "C", name: "Product C", price: 30 },
-];
+
 
 const ProductsView: React.FC = () => {
+
+    const [products, setProducts] = useState<Product[]>([]);
+    const [name, setName] = React.useState<string>();
+    const [sku, setSku] = React.useState<string>();
+    const [minmax, setMinMax] = React.useState<number[]>([0, 1337]);
+    const [minmaxInit, setMinMaxInit] = React.useState<number[]>([0, 0]);
+    const updateName = (e) => {
+        setName(e.target.value);
+    }
+    const updateSku = (e) => {
+        setSku(e.target.value);
+    }
+    const updateMinMax = (event: Event, newValue: number | number[]) => {
+        setMinMax(newValue as number[]);
+    }
+
+    useEffect(() => {
+        fetchProducts({})
+    }, [])
+    useEffect(() => {
+        fetchMinMax()
+    }, [])
+
+    const fetchMinMax = async () => {
+        const result = await getMinMaxPrice();
+        if (result) {
+            setMinMaxInit([result.smallestPrice, result.highestPrice])
+        }
+    }
+
+    const fetchProducts = async (filter: SearchFilter) => {
+        const result = await searchProducts(filter);
+        if (result.products) {
+            setProducts(result.products)
+        }
+    }
+
+
+    const search = async () => {
+        console.log(name, sku, minmax[0], minmax[1])
+        fetchProducts({ sku, name: name, minPrice: minmax[0], maxPrice: minmax[1] });
+
+    };
+
     return (
         <Container sx={{ display: "flex" }}>
             <div style={{ padding: 20 }}>
-                <Box sx={{ p: 2 }}>
+                <Box
+                    sx={{ p: 2 }}>
                     <Typography variant="h6">Filters</Typography>
                     <Divider sx={{ my: 2 }} />
                     <List>
-                        <ListItem>
-                            <FormControlLabel
-                                label="Nombre"
-                                control={<Input />}
-                                labelPlacement="start"
-                            />
+                        <ListItem sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <Box sx={{ display: "flex", flexFlow: 'column', alignItems: "center", width: "100%" }}>
+                                <Typography id="input-slider" gutterBottom>
+                                    Nombre
+                                </Typography>
+                                <Input name="name"
+                                    onChange={updateName}
+                                    sx={{ flex: 1 }} />
+                            </Box>
                         </ListItem>
-                        <ListItem>
-                            <FormControlLabel
-                                label="Sku"
-                                control={<Input />}
-                                labelPlacement="start"
-                            />
+                        <ListItem sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <Box sx={{ display: "flex", flexFlow: 'column', alignItems: "center", width: "100%" }}>
+                                <Typography id="input-slider" gutterBottom>
+                                    Sku
+                                </Typography>
+                                <Input
+                                    onChange={updateSku}
+                                    name="sku" sx={{ flex: 1 }} />
+                            </Box>
                         </ListItem>
-                        <ListItem>
-                            <FormControlLabel
-                                label="Rango de precio"
-                                sx={{ width: "100%" }}
-                                labelPlacement="start"
-                                control={
-                                    <Slider
-                                        value={[10, 90]}
-                                        valueLabelDisplay="auto"
-                                    />
-                                }
-                            />
+                        <ListItem sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <Box sx={{ display: "flex", flexFlow: 'column', alignItems: "center", width: "100%" }}>
+                                <Typography id="input-slider" gutterBottom>
+                                    Rango de precios
+                                </Typography>
+                                <Slider
+                                    sx={{ flex: 1 }}
+                                    onChange={updateMinMax}
+                                    value={minmax}
+                                    name="minmax"
+                                    min={minmaxInit[0]}
+                                    max={minmaxInit[1]}
+                                    valueLabelDisplay="auto"
+                                />
+                            </Box>
                         </ListItem>
                     </List>
-                    <Button variant="contained" fullWidth sx={{ mt: 2 }}>
+                    <Button onClick={search} variant="contained" fullWidth sx={{ mt: 2 }}>
                         Apply Filters
                     </Button>
                 </Box>
             </div>
-            <Products products={sampleProducts} />
+            <Products products={products} />
         </Container>
     );
 };

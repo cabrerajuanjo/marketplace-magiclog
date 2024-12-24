@@ -6,6 +6,7 @@ import {
     HttpException,
     HttpCode,
     Get,
+    UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,6 +17,9 @@ import {
     USER_NOT_FOUND_CODE,
 } from './constants/internal-response-codes.constant';
 import { ApplicationError } from 'src/common/exeptions/aplication-exception.exception';
+import { AuthGuard } from './guards/auth.guard';
+import { RolesGuard } from './guards/role.guard';
+import { Roles } from './guards/role.decorator';
 
 @Controller('user')
 export class UserController {
@@ -69,6 +73,8 @@ export class UserController {
     }
 
     @Get('sellers')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles('admin')
     @HttpCode(200)
     async getSellers() {
         return await this.userService.getSellers();
