@@ -3,3 +3,4 @@ export const INVALID_EMAIL_MESSAGE = "El email proporcionado no es valido";
 export const WRONG_CREDENTIALS_MESSAGE = "Credenciales no validas";
 export const SERVER_ERROR_MESSAGE = "Error inesperado. Inentelo mas tarde o informe al administrador";
 export const MISMATCHED_PASSWORD_MESSAGE = "Las contraseñas deben coincidir";
+export const INVALID_FIELD = "Uno de los campos no es correcto";

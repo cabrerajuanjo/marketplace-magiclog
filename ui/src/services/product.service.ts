@@ -28,6 +28,13 @@ interface MinMaxPrice {
     highestPrice: number;
 }
 
+export interface AddProduct {
+    sku: string;
+    name: string;
+    price: number;
+    quantity: number;
+}
+
 export async function searchProducts(filters: SearchFilter): Promise<SearchResponse> {
     // const sessionToken = sessionStorage.getItem('sessionToken');
     // if (!sessionToken) {
@@ -51,6 +58,21 @@ export async function searchProducts(filters: SearchFilter): Promise<SearchRespo
     }
     const result = await response.json() as Product[];
     return { products: result, responseCode: response.status };
+}
+
+export async function addProduct(product: AddProduct): Promise<number> {
+    const sessionToken = sessionStorage.getItem('sessionToken');
+    if (!sessionToken) {
+        throw new Error("No session token found")
+    }
+    const response = await fetch(`${API_URL}/product`, {
+        method: 'POST', headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + sessionToken,
+        },
+        body: JSON.stringify(product)
+    });
+    return response.status
 }
 
 export async function getOnwProducts(): Promise<SearchResponse> {

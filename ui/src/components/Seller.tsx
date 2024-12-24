@@ -1,42 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { Container, Typography, Box, List, ListItem, ListItemText} from "@mui/material";
+import { Container, Typography, Box, List, ListItem, ListItemText } from "@mui/material";
 import ProductMatrix from "./Products";
 import { getOnwProducts, Product, SearchFilter } from "../services/product.service";
+import AddProduct from "./AddProduct";
 
 const Seller: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
 
-    const fetchProducts = async (filter: SearchFilter) => {
+    const fetchProducts = async () => {
         const result = await getOnwProducts();
         if (result.products) {
             setProducts(result.products)
         }
     }
     useEffect(() => {
-        fetchProducts({})
+        fetchProducts()
     }, [])
-
-    const [selectedView, setSelectedView] = useState('addProduct');
-
-    const handleSelection = (view: string) => {
-        setSelectedView(view);
-    }
 
     return (
         <Container>
             <Box sx={{ mt: 8 }}>
-                <List>
-                    <ListItem onClick={() => handleSelection('addProduct')} >
-                        <ListItemText primary="Add Product" />
-                    </ListItem>
-                    <ListItem
-                        onClick={() => handleSelection('inventory')}
-                        component="button"
-                    >
-                        <ListItemText primary="Mis productos" />
-                <ProductMatrix products={products}/>
-                    </ListItem>
-                </List>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, p: 2 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 2, boxShadow: 1, borderRadius: 1 }}>
+                        <Typography variant="h6">Mis productos</Typography>
+                        <ProductMatrix products={products} />
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 2, boxShadow: 1, borderRadius: 1 }}>
+                        <Typography variant="h6">Add Product</Typography>
+                        <AddProduct triggerUpdate={fetchProducts} />
+                    </Box>
+                </Box>
             </Box>
         </Container>
     );

@@ -1,6 +1,5 @@
-import React from "react";
-import { AppBar, Toolbar, Button, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { AppBar, Toolbar, Typography, Button } from '@mui/material';
+import { Link, useLocation } from 'react-router-dom';
 
 interface NavbarProps {
     isLoggedIn: boolean;
@@ -8,6 +7,10 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, handleLogout }) => {
+    const location = useLocation();
+
+    const isActive = (path) => location.pathname === path ? { fontWeight: 'bold', color: 'orange' } : {};
+
     return (
         <AppBar position="static">
             <Toolbar>
@@ -15,15 +18,30 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, handleLogout }) => {
                     Marketplace
                 </Typography>
 
-                <Button color="inherit" component={Link} to="/">
+                <Button
+                    color="inherit"
+                    component={Link}
+                    to="/"
+                    sx={isActive('/')}
+                >
                     Comprar
                 </Button>
 
-                <Button color="inherit" component={Link} to="/seller">
+                <Button
+                    color="inherit"
+                    component={Link}
+                    to="/seller"
+                    sx={isActive('/seller')}
+                >
                     Vender
                 </Button>
 
-                <Button color="inherit" component={Link} to="/admin">
+                <Button
+                    color="inherit"
+                    component={Link}
+                    to="/admin"
+                    sx={isActive('/admin')}
+                >
                     Administrar
                 </Button>
 
@@ -32,7 +50,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, handleLogout }) => {
                         Salir
                     </Button>
                 ) : (
-                    <Button color="inherit" component={Link} to="/signin">
+                    <Button color="inherit" component={Link} to="/signin" sx={isActive('/signin')}>
                         Entrar
                     </Button>
                 )}
@@ -42,3 +60,4 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, handleLogout }) => {
 };
 
 export default Navbar;
+

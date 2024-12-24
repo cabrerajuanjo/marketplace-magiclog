@@ -1,96 +1,94 @@
 import React, { useState } from "react";
-import {
-  TextField,
-  Button,
-  Box,
-  Typography,
-  Grid,
-} from "@mui/material";
+import { TextField, Button, Box } from "@mui/material";
+import { addProduct } from "../services/product.service";
+import { INVALID_FIELD, SERVER_ERROR_MESSAGE } from "../constants/messages.constant";
+import FormErrorDetail from "./FormErrorDetail";
 
-const AddProductForm = ({ onSubmit }) => {
-  const [formValues, setFormValues] = useState({
-    sku: "",
-    name: "",2231
-    price: "",
-    quantity: "",
-  });
+// Define types for the form data
+interface ProductFormData {
+    sku: string;
+    name: string;
+    price: number;
+    quantity: number;
+}
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({
-      ...formValues,
-      [name]: value,
+const AddProduct: React.FC<{triggerUpdate: () => void}> = ({triggerUpdate}) => {
+    // State for form fields
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [formData, setFormData] = useState<ProductFormData>({
+        sku: "",
+        name: "",
+        price: 0,
+        quantity: 0,
     });
-  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (onSubmit) {
-      onSubmit(formValues);
-    }
-    setFormValues({ sku: "", name: "", price: "", quantity: "" });
-  };
+    // Handle form field changes
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: name === "price" || name === "quantity" ? parseFloat(value) : value,
+        }));
+    };
 
-  return (
-    <Box sx={{ maxWidth: 400, margin: "0 auto", padding: 2 }}>
-      <Typography variant="h5" gutterBottom>
-        Add Product
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log("Product data submitted:", formData);
+        const responseCode = await addProduct(formData)
+        if (responseCode === 201) {
+            triggerUpdate()
+        } else if (responseCode === 400) {
+            setErrorMessage(INVALID_FIELD);
+        } else {
+            setErrorMessage(SERVER_ERROR_MESSAGE);
+        }
+    };
+
+    return (
+        <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ display: "flex", flexDirection: "column", gap: 2, maxWidth: 400, mx: "auto" }}
+        >
             <TextField
-              label="SKU"
-              name="sku"
-              value={formValues.sku}
-              onChange={handleChange}
-              fullWidth
-              required
+                label="SKU"
+                name="sku"
+                value={formData.sku}
+                onChange={handleChange}
+                required
             />
-          </Grid>
-          <Grid item xs={12}>
             <TextField
-              label="Name"
-              name="name"
-              value={formValues.name}
-              onChange={handleChange}
-              fullWidth
-              required
+                label="Product Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
             />
-          </Grid>
-          <Grid item xs={12}>
             <TextField
-              label="Price"
-              name="price"
-              type="number"
-              value={formValues.price}
-              onChange={handleChange}
-              fullWidth
-              required
-              inputProps={{ step: "0.01", min: "0" }}
+                label="Price"
+                name="price"
+                type="number"
+                value={formData.price}
+                onChange={handleChange}
+                required
+                InputProps={{ inputProps: { min: 0 } }}
             />
-          </Grid>
-          <Grid item xs={12}>
             <TextField
-              label="Quantity"
-              name="quantity"
-              type="number"
-              value={formValues.quantity}
-              onChange={handleChange}
-              fullWidth
-              required
-              inputProps={{ min: "0" }}
+                label="Quantity"
+                name="quantity"
+                type="number"
+                value={formData.quantity}
+                onChange={handleChange}
+                required
+                InputProps={{ inputProps: { min: 0 } }}
             />
-          </Grid>
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary" fullWidth>
-              Add Product
+            <Button type="submit" variant="contained" color="primary">
+                Add Product
             </Button>
-          </Grid>
-        </Grid>
-      </form>
-    </Box>
-  );
+            <FormErrorDetail errorMessage={errorMessage} />
+        </Box>
+    );
 };
 
-export default AddProductForm;
+export default AddProduct;
+
