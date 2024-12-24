@@ -111,7 +111,7 @@ const ProductsView: React.FC = () => {
                     </Button>
                 </Box>
             </div>
-            <Container>
+            <Container sx={{p:5}}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5, p: 2, boxShadow: 1, borderRadius: 1 }}>
                     <ProductMatrix products={products} />
                 </Box>
