@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 
-const API_URL = import.meta.env.VITE_API_URL
+// const API_URL = import.meta.env.VITE_API_URL
 
 type TokenPayload = {
     email: string;
@@ -18,10 +18,10 @@ type LoginResponse = {
     sessionToken: string;
 }
 
-const base_url = import.meta.env.DEV? API_URL : '';
+// const base_url = import.meta.env.DEV? API_URL : '';
 
 export async function login(email: string, password: string): Promise<LoginResult> {
-    const response = await fetch(`${base_url}/user/login`, {
+    const response = await fetch(`/user/login`, {
         method: 'POST', headers: {
             "Content-Type": "application/json",
         }, body: JSON.stringify({ email, password })
@@ -36,7 +36,7 @@ export async function login(email: string, password: string): Promise<LoginResul
 }
 
 export async function createAccount(email: string, password: string): Promise<number> {
-    const response = await fetch(`${base_url}/user`, {
+    const response = await fetch(`/user`, {
         method: 'POST', headers: {
             "Content-Type": "application/json",
         }, body: JSON.stringify({ email, password })

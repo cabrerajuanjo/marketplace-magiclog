@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL
+// const API_URL = import.meta.env.VITE_API_URL
 
 export interface SearchFilter {
     name?: string;
@@ -35,7 +35,7 @@ export interface AddProduct {
     quantity: number;
 }
 
-const base_url = import.meta.env.DEV? API_URL : '';
+// const base_url = import.meta.env.DEV? API_URL : '';
 
 export async function searchProducts(filters: SearchFilter): Promise<SearchResponse> {
     // const sessionToken = sessionStorage.getItem('sessionToken');
@@ -49,7 +49,7 @@ export async function searchProducts(filters: SearchFilter): Promise<SearchRespo
         }
     }
     queryString = queryString.slice(0, -1);
-    const response = await fetch(`${base_url}/product/search${queryString}`, {
+    const response = await fetch(`/product/search${queryString}`, {
         method: 'GET', headers: {
             "Content-Type": "application/json",
             // "Authorization": sessionToken,
@@ -67,7 +67,7 @@ export async function addProduct(product: AddProduct): Promise<number> {
     if (!sessionToken) {
         throw new Error("No session token found")
     }
-    const response = await fetch(`${base_url}/product`, {
+    const response = await fetch(`/product`, {
         method: 'POST', headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + sessionToken,
@@ -82,7 +82,7 @@ export async function getOnwProducts(): Promise<SearchResponse> {
     if (!sessionToken) {
         throw new Error("No session token found")
     }
-    const response = await fetch(`${base_url}/product/mine`, {
+    const response = await fetch(`/product/mine`, {
         method: 'GET', headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + sessionToken,
@@ -101,7 +101,7 @@ export async function getAllProducts(email?: string): Promise<SearchResponse> {
         throw new Error("No session token found")
     }
     const filter = email? '?email='+ email: '';
-    const response = await fetch(`${base_url}/product/all?${filter}`, {
+    const response = await fetch(`/product/all?${filter}`, {
         method: 'GET', headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + sessionToken,
@@ -115,7 +115,7 @@ export async function getAllProducts(email?: string): Promise<SearchResponse> {
 }
 
 export async function getMinMaxPrice(): Promise<MinMaxPrice> {
-    const response = await fetch(`${base_url}/product/minmax-price`, {
+    const response = await fetch(`/product/minmax-price`, {
         method: 'GET', headers: {
             "Content-Type": "application/json",
         }
