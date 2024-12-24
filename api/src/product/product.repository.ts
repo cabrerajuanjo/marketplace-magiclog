@@ -42,7 +42,7 @@ export class ProductRepository {
 
     async getProductsByEmail(email: string[]) {
         return await this.prisma.product.findMany({
-            where: { user: { email: {in: email}  }},
+            where: { user: { email: { in: email } } },
         });
     }
 
@@ -50,7 +50,7 @@ export class ProductRepository {
         return await this.prisma.product.findMany({
             where: {
                 sku: searchProductsQueryDto.sku,
-                name: { startsWith: searchProductsQueryDto.name},
+                name: { startsWith: searchProductsQueryDto.name },
                 price: {
                     lte: searchProductsQueryDto.maxPrice,
                     gte: searchProductsQueryDto.minPrice,
