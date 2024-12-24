@@ -14,16 +14,23 @@ export class ProductService {
 
     getAll(getAllQueryDto: GetAllQueryDto) {
         return this.productRepository.getProductsByEmail(
-            getAllQueryDto.sellerEmail,
+            getAllQueryDto.sellerEmails,
         );
     }
 
     getOwn(email: string) {
-        return this.productRepository.getProductsByEmail(email);
+        return this.productRepository.getProductsByEmail([email]);
     }
 
     async getMinMax() {
         const result = await this.productRepository.getProductsOrderedByPrice();
+        if (!result.length) {
+            return {
+                smallestPrice: 0,
+                highestPrice: 100,
+            };
+        }
+
         return {
             smallestPrice: result[0].price,
             highestPrice: result[result.length - 1].price,

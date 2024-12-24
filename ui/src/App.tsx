@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Products from "./components/Products";
 import Seller from "./components/Seller";
 import Admin from "./components/Admin";
 import SignIn from "./components/SignIn";

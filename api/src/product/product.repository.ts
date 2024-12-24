@@ -40,9 +40,9 @@ export class ProductRepository {
         });
     }
 
-    async getProductsByEmail(email: string) {
+    async getProductsByEmail(email: string[]) {
         return await this.prisma.product.findMany({
-            where: { user: { email } },
+            where: { user: { email: {in: email}  }},
         });
     }
 

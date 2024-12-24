@@ -14,7 +14,7 @@ const ProductsFilter: React.FC = () => {
     return (
         <div style={{ padding: 20 }}>
             <Box sx={{ p: 2 }}>
-                <Typography variant="h6">Filters</Typography>
+                <Typography variant="h6">Filtros</Typography>
                 <Divider sx={{ my: 2 }} />
                 <List>
                     <ListItem>
@@ -37,7 +37,7 @@ const ProductsFilter: React.FC = () => {
                     </ListItem>
                 </List>
                 <Button variant="contained" fullWidth sx={{ mt: 2 }}>
-                    Apply Filters
+                    Aplicar Filtros
                 </Button>
             </Box>
         </div>

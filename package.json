@@ -4,15 +4,16 @@
     "description": "Full stack assignment for Magiclog application",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "build": "./scripts/build.sh",
+        "start": "node ./api/dist/src/main.js"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/cabrerajuanjo/marketplace-magiclog.git"
     },
     "workspaces": [
-        "api",
-        "app"
+        "api/",
+        "ui/"
     ],
     "author": "Juan Jose Cabrera",
     "license": "ISC",

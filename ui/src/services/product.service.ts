@@ -93,6 +93,25 @@ export async function getOnwProducts(): Promise<SearchResponse> {
     return { products: result, responseCode: response.status };
 }
 
+export async function getAllProducts(email?: string): Promise<SearchResponse> {
+    const sessionToken = sessionStorage.getItem('sessionToken');
+    if (!sessionToken) {
+        throw new Error("No session token found")
+    }
+    const filter = email? '?email='+ email: '';
+    const response = await fetch(`${API_URL}/product/all?${filter}`, {
+        method: 'GET', headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + sessionToken,
+        }
+    });
+    if (!response.ok) {
+        return { products: null, responseCode: response.status }
+    }
+    const result = await response.json() as Product[];
+    return { products: result, responseCode: response.status };
+}
+
 export async function getMinMaxPrice(): Promise<MinMaxPrice> {
     const response = await fetch(`${API_URL}/product/minmax-price`, {
         method: 'GET', headers: {

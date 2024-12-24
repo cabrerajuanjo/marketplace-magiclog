@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Typography, Box } from "@mui/material";
-import ProductsFilter from "./ProductsFilter";
 import Products from "./Products";
+import { getAllProducts, Product } from "../services/product.service";
 
 const Admin: React.FC = () => {
+    const [products, setProducts] = useState<Product[]>([]);
+
+    const fetchProducts = async () => {
+        const email = 'asd'
+        const result = await getAllProducts(email);
+        if (result.products) {
+            setProducts(result.products)
+        }
+    }
+    useEffect(() => {
+        fetchProducts()
+    }, [])
     return (
         <Container>
             <Box sx={{ mt: 8 }}>
@@ -11,8 +23,7 @@ const Admin: React.FC = () => {
                     Panel de administrador
                 </Typography>
                 <Container sx={{ display: "flex" }}>
-                    <ProductsFilter />
-                    <Products />
+                    <Products products={products} hideBuyButton={true}/>
                 </Container>
             </Box>
         </Container>
